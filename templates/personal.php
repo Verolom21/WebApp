@@ -41,7 +41,7 @@
             var login = getCookie('login');
             let response = await fetch('/templates/ajax.php?login=' + login);
             let result = await response.json();
-            console.log(result)
+
         }, false);
 
     </script>
@@ -49,7 +49,7 @@
     <h1>Привет <span class="userName"></span>!</h1>
     <br>
     <div class="personalInfo">
-
+    <!-- в зависимости от result в js отображать блоки -->
         <div class="bonusPoints">
 
             <!-- если получены бонусные баллы -->
