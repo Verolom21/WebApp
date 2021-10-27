@@ -35,8 +35,13 @@ if (isset($_POST['login']) && isset($_POST['password'])) {
     ]);
 }
 
-if (isset($_GET['login'])) {
+if (isset($_GET['login']) and isset($_GET['getInfo'])) {
     $personalInfo = Database::getPersonalInfo($conn, $_GET['login']);
+    echo json_encode($personalInfo);
+}
+
+if (isset($_GET['login']) and isset($_GET['receiveGift'])) {
+    $personalInfo = Database::receiveGift($conn, $_GET['login']);
     echo json_encode($personalInfo);
 }
 

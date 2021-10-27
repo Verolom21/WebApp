@@ -30,26 +30,12 @@
         <title>Document</title>
     </head>
     <body>
-    <script>
 
-        document.addEventListener('DOMContentLoaded', async () =>
-        {
-            function getCookie(name) {
-                var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
-                return matches ? decodeURIComponent(matches[1]) : undefined;
-            }
-            var login = getCookie('login');
-            let response = await fetch('/templates/ajax.php?login=' + login);
-            let result = await response.json();
-
-        }, false);
-
-    </script>
 
     <h1>Привет <span class="userName"></span>!</h1>
     <br>
-    <div class="personalInfo">
-    <!-- в зависимости от result в js отображать блоки -->
+    <div class="personalInfo" style="display: none">
+
         <div class="bonusPoints">
 
             <!-- если получены бонусные баллы -->
@@ -92,11 +78,81 @@
 
 
     </div>
-    <div class="receiveGift">
-        <p>Нажмите на кнопку, чтобы получить случайный приз!</p>
-        <button id="receiveGift">ПОЛУЧИТЬ ПРИЗ</button>
+    <div class="takeGift">
+
     </div>
 
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script>
+
+        function getCookie(name) {
+            var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+        }
+        let login = getCookie('login')
+        let url = '/templates/ajax.php?login=' + login;
+
+        let userInfo;
+
+        $.ajax({
+            'url': url+'&getInfo=1',
+            method: 'get',
+            dataType: 'json',
+            async: false,
+            success: function(data){
+                userInfo = data;
+            }
+        })
+
+        console.log(userInfo)
+        if (userInfo['giftIsRecieved']==0) {
+
+            let takeGift = document.querySelector('.takeGift');
+
+            let p = document.createElement('p');
+            p.innerHTML='Нажмите на кнопку, чтобы получить случайный приз!'
+            takeGift.appendChild(p);
+
+            let butReceiveGift = document.createElement('button');
+            butReceiveGift.innerHTML = 'ПОЛУЧИТЬ ПРИЗ';
+            butReceiveGift.id = 'receiveGift';
+            butReceiveGift.addEventListener('click', function() {
+                $.ajax({
+                    'url': url+'&receiveGift',
+                    method: 'get',
+                    dataType: 'json',
+                    async: false,
+                    success: function(data){
+                        userInfo = data;
+                    }
+                })
+            });
+            takeGift.appendChild(butReceiveGift);
+
+
+
+        } else {
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
 
     </body>
     </html>
