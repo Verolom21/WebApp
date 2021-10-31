@@ -1,5 +1,7 @@
 <?php
-use classes\Database;
+
+use classes\Personal;
+use classes\DB;
 
 $cookie = $_COOKIE;
 require $_SERVER['DOCUMENT_ROOT'].'/classes/Autoloader.php';

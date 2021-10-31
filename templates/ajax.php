@@ -1,23 +1,26 @@
 <?php
 
-use classes\Database;
+use classes\Personal;
+use classes\DB;
 
 require $_SERVER['DOCUMENT_ROOT'].'/classes/Autoloader.php';
 $settings = require $_SERVER['DOCUMENT_ROOT'].'/settings.php';
 Autoloader::register();
 
-$conn = Database::connect(
-    $settings['host'],
-    $settings['database'],
-    $settings['login'],
-    $settings['password']
-);
+if (isset($_POST['login'])) {
+    $login = $_POST['login'];
+}
+
+if (isset($_GET['login'])) {
+    $login = $_GET['login'];
+}
+
+$user = new Personal($login);
 
 if (isset($_POST['login']) && isset($_POST['password'])) {
-    $login = $_POST['login'];
     $password = $_POST['password'];
 
-    $userInfo = Database::checkUser($conn, $login);
+    $userInfo = $user->checkUser();
     $res = 0;
     if (!$userInfo) {
         $message = 'Пользователя с таким логином не существует';
@@ -33,16 +36,43 @@ if (isset($_POST['login']) && isset($_POST['password'])) {
         'res'=>$res,
         'message'=>$message
     ]);
+    return;
 }
 
 if (isset($_GET['login']) and isset($_GET['getInfo'])) {
-    $personalInfo = Database::getPersonalInfo($conn, $_GET['login']);
+    $personalInfo = $user->getPersonalInfo();
     echo json_encode($personalInfo);
+    return;
 }
 
 if (isset($_GET['login']) and isset($_GET['receiveGift'])) {
-    $personalInfo = Database::receiveGift($conn, $_GET['login']);
+    $personalInfo = $user->receiveGift();
     echo json_encode($personalInfo);
+    return;
+}
+
+if (isset($_GET['login']) and isset($_GET['sendObject'])) {
+    $res = $user->sendObject();
+    echo json_encode($res);
+    return;
+}
+
+if (isset($_GET['login']) and isset($_GET['sendInBank'])) {
+    $res = $user->transferInBank();
+    echo json_encode($res);
+    return;
+}
+
+if (isset($_GET['login']) and isset($_GET['convertInPoints'])) {
+    $res = $user->convertMoneyInPoints();
+    echo json_encode($res);
+    return;
+}
+
+if (isset($_GET['login']) and isset($_GET['rejectObject'])) {
+    $res = $user->refusedGift();
+    echo json_encode($res);
+    return;
 }
 
 
